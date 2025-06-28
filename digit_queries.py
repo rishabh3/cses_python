@@ -43,14 +43,23 @@ go on like this
 
 We cant generate whole string before hand as that will be costly instead we can
 generate a substring and add more to it based on the query asked
+
+
+1234567891011
+k = 12 -> 1
+For k = 12 we find out which number the digit belongs to
+9 189
+digit = 2
+(12 - 9) % 2 = 1
+(12 - 9) // 2 = 1
+
+10 + 1 = 11
+
+str(11)[1-1] = 1
+
+123456789101112131415
 """
 import bisect
-
-
-def generate_str(digit, start=1, s=""):
-    upper_limit = 10 ** digit
-    nums = list(map(str, range(start, int(upper_limit))))
-    return s + "".join(nums), upper_limit
 
 
 def generate_prefix_str_length():
@@ -70,16 +79,22 @@ def generate_prefix_str_length():
 def solve():
     queries = int(input())
     prefix = generate_prefix_str_length()
-    digit = 10
-    s, next_start = generate_str(digit)
-
     for _ in range(queries):
         k = int(input())
-        if k >= len(s):
-            # Add more numbers
-            digit = bisect.bisect_left(prefix, k)
-            s, next_start = generate_str(digit+1, start=next_start, s=s)
-        print(s[k-1])
+        # Find the position where k exists
+        digit_length = 1
+        count = 9
+        start = 1
+
+        while k > digit_length * count:
+            k -= digit_length * count
+            digit_length += 1
+            count *= 10
+            start *= 10
+        num = start + (k - 1) // digit_length
+        index = (k - 1) % digit_length
+        ans = str(num)[index]
+        print(ans)
 
 
 if __name__ == "__main__":
